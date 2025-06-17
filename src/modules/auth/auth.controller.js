@@ -12,7 +12,7 @@ class AuthController{
     async sendOTP(req,res,next){
         try {
             const {mobile} = req.body;
-            const result = await this.#service.sendOTP(mobile);
+            await this.#service.sendOTP(mobile);
             return{
                 message: AuthMessage.sendOptSuccessfully
             }
