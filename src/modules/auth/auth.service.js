@@ -15,7 +15,7 @@ class AuthService {
         const now = new Date().getTime();
         const otp ={
             code : randomInt (10000,99999), // Generate a random 5-digit code
-            expiresIn : expiresIn = now + (2 * 60 * 1000),// Set
+            expiresIn : now + (2 * 60 * 1000),// Set
 
         }
         if (!user){
@@ -25,6 +25,7 @@ class AuthService {
         if (user.otp && user.otp.expiresIn > now) {
             throw new createHttpError.BadRequest(AuthMessage.OtpCodeNotExpired);
         }
+    }
         user.otp = otp; // Assign the OTP to the user object
         await user.save();
         return user;
