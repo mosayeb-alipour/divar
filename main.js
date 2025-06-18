@@ -3,6 +3,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const swaggerConfig = require('./src/config/swagger.config.js');
 const mainRouter = require('./src/app.routes.js');
+const NotFoundHandler = require('./src/common/exception/not-found.handler.js');
+const AllExceptionHandler = require('./src/common/exception/all-exception.handler.js');
 dotenv.config();
 // Load environment variables from .env file
 // If you have a .env file, make sure to create it in the root directory with your environment variables.
@@ -14,10 +16,10 @@ async function main() {
     app.use(express.json()); // Middleware to parse JSON request bodies
     app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded request bodies
     swaggerConfig(app)
+    NotFoundHandler(app) // Middleware to handle 404 Not Found errors
+    AllExceptionHandler(app);
+    // Initialize the main router
     // Sample route
-    app.get('/', (req, res) => {
-        res.send('Hello World!');
-    });
     app.use(mainRouter);
     // Start the server
     app.listen(port, () => {

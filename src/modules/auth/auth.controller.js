@@ -13,9 +13,7 @@ class AuthController{
         try {
             const {mobile} = req.body;
             await this.#service.sendOTP(mobile);
-            return{
-                message: AuthMessage.sendOptSuccessfully
-            }
+            return res.json({message: AuthMessage.sendOptSuccessfully})
 
         } catch (error) {
             next(error);
@@ -32,5 +30,3 @@ class AuthController{
     
 }
 module.exports = new AuthController();
-// This code defines an AuthController class that handles sending and checking OTPs.
-// The class has two methods: sendOTP and checkOTP, which are intended to be used as route handlers in an Express.js application.
