@@ -1,8 +1,8 @@
-const {Router} = require ("express");
-const router = Router();
+const {Router} = require("express");
 const authController = require("./auth.controller");
-router.post("/send-otp",authController.sendOTP);
-router.post("/send-otp",authController.checkOTP);
-module.exports ={
+const router = Router();
+router.post("/send-otp", authController.sendOTP);
+router.post("/check-otp", authController.checkOTP);
+module.exports = {
     AuthRouter: router
 }

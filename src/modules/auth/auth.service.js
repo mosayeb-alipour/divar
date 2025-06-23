@@ -15,16 +15,16 @@ class AuthService {
         const now = new Date().getTime();
         const otp ={
             code : randomInt (10000,99999), // Generate a random 5-digit code
-            expiresIn : now + (2 * 60 * 1000),// Set
+            expiresIn : now + (1000*60*2),// Set
 
         }
         if (!user){
-            const newUser = await this.#model.create({mobile,otp,});
+            const newUser = await this.#model.create({mobile,otp});
             return newUser;
+        }
         // Check if the user has an OTP and if it is still valid
         if (user.otp && user.otp.expiresIn > now) {
             throw new createHttpError.BadRequest(AuthMessage.OtpCodeNotExpired);
-        }
     }
         user.otp = otp; // Assign the OTP to the user object
         await user.save();
