@@ -3,6 +3,8 @@ const UserModel = require("../user/user.model");
 const createHttpError = require("http-errors");
 const { AuthMessage } = require("./auth.messages");
 const {randomInt} = require("crypto");
+require("dotenv").config();
+const jwt = require("jsonwebtoken"); // Assuming you have a JWT library for token generation
 class AuthService {
     #model;
     constructor() {
@@ -34,13 +36,32 @@ class AuthService {
 
     }
     async checkOTP(mobile, code){
-
+        const user = await this.checkExistByMobile(mobile);
+        const now = new Date().getTime();
+        // Check if the OTP exists and is valid
+        if(user?.otp?.expiresIn< now){
+            throw new createHttpError.BadRequest(AuthMessage.OtpCodeExpired);
+        }
+        if(user?.otp?.code !== code){
+            throw new createHttpError.BadRequest(AuthMessage.OtpCodeNotMatch);
+        }
+        if(!user.verifiedMobile){
+            user.verifiedMobile = true; // Mark the mobile number as verified
+    
+        }
+        const accessToken = this.signToken({mobile,id:user._id})
+        user.accessToken = accessToken; // Assign the access token to the user object
+        await user.save();
+        return accessToken; // Return the access token to the user
     }
     async checkExistByMobile(mobile) {
         const user = await this.#model.findOne({ mobile });
         if (!user) throw new createHttpError.NotFound(AuthMessage.NotFound);
         return user;
-    
+   
+}
+signToken (payload){
+    return jwt.sign(payload,process.env.JWT_SECRET_KEY,{expiresIn: "1y"});
 }
 }
 module.exports = new AuthService();
