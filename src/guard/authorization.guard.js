@@ -5,7 +5,7 @@ const UserModel = require("../modules/user/user.model");
 require("dotenv").config();
 const Authorization = async  (req,res,next) => {
     try{
-        const token  = req?.cookie?.access_token;
+        const token  = req?.cookies?.access_token;
         if(!token) throw new createHttpError.Unauthorized(AuthorizationMessage.Login);
         const data = jwt.verify(token, process.env.JWT_SECRET_KEY);
         
