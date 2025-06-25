@@ -41,6 +41,9 @@
  *              application/json:
  *                  schema:
  *                      $ref:   '#/components/schemas/CreateCategory'
+ *      responses:
+ *          201:
+ *              description: created
  */
 /**
  * @swagger
