@@ -4,7 +4,6 @@ const { isValidObjectId, Types } = require("mongoose");
 const createHttpError = require("http-errors");
 const { CategoryMessage } = require("./category.message");
 const { default: slugify } = require("slugify");
-
 class CategoryService {
     #model;
     #optionModel;
@@ -13,7 +12,7 @@ class CategoryService {
         this.#model = CategoryModel;
     }
     async find(){
-        return await this.#model.find({parent: {$exists: false}});
+        return await this.#model.find({parent: {$exists: false}}).populate([{path: "children"}]);
     }
     async create(categoryDto) {
         if(categoryDto?.parent && isValidObjectId(categoryDto.parent)) {
