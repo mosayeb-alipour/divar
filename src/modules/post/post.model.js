@@ -1,8 +1,8 @@
 const { Schema, Types } = require("mongoose");
 
 const PostSchema = new Schema({
-    title:{type:String,required:true,},
-    content:{type:String,required:true,},
+    title:{type:String,required:true},
+    content:{type:String,required:true},
     category: {type: Types.ObjectId , ref: "Category" , required: true},
     province: {type: String, required: true},
     city: {type: String, required: true},
