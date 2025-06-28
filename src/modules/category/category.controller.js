@@ -16,8 +16,6 @@ class CategoryController{
                 message: CategoryMessage.Created
             })
         } catch (error) {
-            console.log("Error:",error);
-            
             next(error)
             
         }
