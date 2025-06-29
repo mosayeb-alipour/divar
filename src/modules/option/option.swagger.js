@@ -90,7 +90,7 @@
  */
 /**
  * @swagger
- * /option/:
+ * /option:
  *  get:
  *      summary: get all  options
  *      tags:
