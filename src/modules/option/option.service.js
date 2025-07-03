@@ -17,13 +17,13 @@ class OptionService {
     async create(optionDto) {
         const category = await this.checkExistById(optionDto.category);
         optionDto.category = category._id
-        c = slugify(optionDto.key,{trim:  true, replacement: "_", lower: true});
+        const c = slugify(optionDto.key,{trim:  true, replacement: "_", lower: true}); 
         await this.alreadyExistByCategoryAndKey(optionDto.key,category._id)
         if(optionDto?.enum && typeof optionDto.enum === "string"){
             optionDto.enum = optionDto.enum.split(",")
         }else if (Array.isArray(optionDto.enum)) optionDto.enum = [];
         const option = await this.#model.create(optionDto)
-
+        return option;
     }
     async checkExistById(id) {
         const category = await this.#categoryModel.findById(id);
