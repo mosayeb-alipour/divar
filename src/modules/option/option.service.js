@@ -13,6 +13,8 @@ class OptionService {
         this.#categoryModel = CategoryModel;
     }
     async find(){
+        const options = await this.#model.find({}, {__v:0}, {sort: {_id: -1}}).populate([{path:"category", select: {name:1, slug:1}}]);
+        return options;
     }
     async create(optionDto) {
         const category = await this.checkExistById(optionDto.category);
@@ -25,10 +27,64 @@ class OptionService {
         const option = await this.#model.create(optionDto)
         return option;
     }
+    async findById(id){
+        return await this.checkExistById(id);
+    }
+    async removeById(id){
+        await this.checkExistOptionById(id);
+        return await this.#model.deleteOne({_id:id});
+    }
+    async findByCategoryId(category){
+        return await this.#model.find({category},{__v:0}).populate([{path:"category", select: {name:1, slug:1}}]);
+    }
+    async findByCategorySlug(slug){
+        const options = await this.#model.aggregate([
+            {
+                $lookup:{
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+            {
+                $unwind: "$category"
+            },
+            {
+                $addFields:{
+                    categorySlug: "$category.slug",
+                    categoryName: "$category.name",
+                    categoryIcon: "$category.icon",
+                }
+            },
+            {
+                $project:{//برای نمابش فیلدها استفاده شده است
+                    // "category.parent": 0,  //اگر بخواهیم فیلدی نمایش داده نشود نام کالشن و بعد نام داکیومنت را وارد می کنیم و عدد صفر را قرار می دهیم
+                    // "category.parents": 0,
+                    // "category._id": 0, 
+                    __v:  0 ,
+                    category : 0, //با این کار جلوی نمایش فیلدها را گرفتیم چرا که از طریق addfilds این کار را انجام دادیم
+
+                }
+            },
+            {
+                $match:{
+                    categorySlug: slug
+                }
+            }
+        ])
+        return options;
+    }
     async checkExistById(id) {
         const category = await this.#categoryModel.findById(id);
         if(!category) throw new createHttpError.NotFound(OptionMessage.NotFound)
             return category;
+
+    }
+    async checkExistOptionById(id) {
+        const option = await this.#model.findById(id);
+        if(!option) throw new createHttpError.NotFound(OptionMessage.NotFound)
+            return option;
 
     }
     async alreadyExistByCategoryAndKey(key, category) {
