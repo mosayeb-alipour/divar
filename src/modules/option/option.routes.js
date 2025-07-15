@@ -9,6 +9,7 @@ router.get("/category/:categoryId", optionController.find)
 router.get("/:id", optionController.findById)
 router.delete("/:id", optionController.removeById)
 router.get("/", optionController.find)
+router.put("/:id", optionController.update)
 module.exports ={
     OptionRoutes : router
 }

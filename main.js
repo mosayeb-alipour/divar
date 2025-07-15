@@ -7,6 +7,7 @@ const AllExceptionHandler = require('./src/common/exception/all-exception.handle
 const SwaggerConfig = require('./src/config/swagger.config.js');
 const mainRouter = require('./src/app.routes.js');
 const cookieParser = require('cookie-parser');
+const expressEjsLayouts = require('express-ejs-layouts');
 require ('./src/config/mongoose.config.js');
 async function main() {
     const app = express();
@@ -14,6 +15,10 @@ async function main() {
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
     app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
+    app.use(express.static("public"));
+    app.use(expressEjsLayouts);
+    app.set("view engine", "ejs");
+    app.set("layout", "./layouts/panel/main.ejs");
     app.use(mainRouter);
     SwaggerConfig(app)
     NotFoundHandler(app) 

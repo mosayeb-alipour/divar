@@ -9,4 +9,7 @@ mainRouter.use("/auth",AuthRouter);
 mainRouter.use("/user",UserRouter);
 mainRouter.use("/category",CategoryRouter);
 mainRouter.use("/option",OptionRoutes);
+mainRouter.get("/",(req,res) => {
+    res.render("./pages/index.ejs")
+})
 module.exports = mainRouter;
