@@ -10,6 +10,9 @@ mainRouter.use("/user",UserRouter);
 mainRouter.use("/category",CategoryRouter);
 mainRouter.use("/option",OptionRoutes);
 mainRouter.get("/",(req,res) => {
-    res.render("./pages/panel/dashboard.ejs")
+    res.locals.layout = "./layouts/website/main.ejs";
+    res.render("./pages/home/index.ejs", { style: "", script: "" });})
+mainRouter.get("/panel",(req,res) => {
+    res.render("./pages/panel/dashboard.ejs");
 })
 module.exports = mainRouter;

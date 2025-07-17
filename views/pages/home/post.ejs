@@ -3,9 +3,9 @@
     <nav></nav>
     <div class="post-content">
       <div class="post-title">
-        <div class="post-title-h1"> <%=post.title%></div>
+        <div class="post-title-h1"> <% =post.title %></div>
           <div class="post-title-location">
-            <%=(post.city || post.province)%>
+            <% =(post.city || post.province) %>
           </div>
           </div>
           <div class="post-action">
@@ -27,18 +27,18 @@
                 </div>
               </div>
             </a>
-            <%for(key in post.options){%>
+            <% for(key in post.options){  %>
             <hr />
             <div class="post-list-item post-row">
               <div class="post-list-title"><%=key%></div>
               <div class="post-list-detail"><%=post.options[key]%></div>
             </div>
-            <%}%>
+            <% } %>
           </div>
           <div class="post-description">
             <h2 class="post-description-title">توضیحات</h2>
             <div class="post-description-detail">
-              <p><%=post.content%></p>
+              <p><% =post.content %></p>
             </div>
           </div>
         </div>
@@ -48,11 +48,11 @@
   <!-- Additional required wrapper -->
   <div class="swiper-wrapper">
     <!-- Slides -->
-    <%for(let image of post.images) {%>
+    <% for(let image of post.images) { %>
         <div class="swiper-slide post-thumbnail">
             <img src="/<%=image%>" alt=""  style="width: 100%" />
         </div>
-    <%}%>
+    <%  } %>
     ...
 </div>
 <!-- If we need pagination -->
