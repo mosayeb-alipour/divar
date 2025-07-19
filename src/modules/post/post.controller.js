@@ -13,16 +13,15 @@ class PostController{
         try {
             const categories = await CategoryModel.aggregate([
                 {  
-                    $match:{parent: null}
-                }]);                
-            res.render("./pages/panel/create-post.ejs"),{
+                    $match: { parent: null }
+                }
+            ]);                
+            res.render("./pages/panel/create-post.ejs", {
                 categories,
-            }
-            
-            
+            });
+            console.log("Categories:", categories);
         } catch (error) {
             next(error);
-            
         }
     }
     async create(req,res,next){
