@@ -3,6 +3,7 @@ const HttpCodes = require ("http-codes");
 const postService = require("./post.service");
 const { PostMessage } = require("./post.message");
 const CategoryModel = require("../category/category.model");
+const createHttpError = require("http-errors");
 class PostController{
     #service;
     constructor(){
@@ -11,15 +12,32 @@ class PostController{
     }
     async createPostPage(req, res, next) {
         try {
+            let {slug} = req.query;
+            let showBack = false;
+            let match = {parent:null};
+            let options;
+            if (slug) {
+                slug.trim();
+                const category = await CategoryModel.findOne({slug});
+                if (!category) throw new createHttpError.NotFound(PostMessage.NotFound);
+                options = await this.#service.getCategoryOption(category._id);
+                if(options.length === 0) options = null;
+                showBack = true;
+                match = {parent: category._id};                
+            }else{
+
+            }
+            
             const categories = await CategoryModel.aggregate([
-                {  
-                    $match: { parent: null }
-                }
-            ]);                
+                                {  
+                                    $match: match
+                                }
+                            ]);                
             res.render("./pages/panel/create-post.ejs", {
                 categories,
+                showBack,
+                options,
             });
-            console.log("Categories:", categories);
         } catch (error) {
             next(error);
         }
