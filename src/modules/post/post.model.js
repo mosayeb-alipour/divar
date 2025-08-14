@@ -4,11 +4,15 @@ const PostSchema = new Schema({
     title:{type:String,required:true},
     content:{type:String,required:true},
     category: {type: Types.ObjectId , ref: "Category" , required: true},
-    province: {type: String, required: true},
-    city: {type: String, required: true},
-    district: {type: String, required: true},
+    province: {type: String, required: false},
+    city: {type: String, required: false},
+    district: {type: String, required: false},
+    address: {type: String, required: false},
     coordinate:{type: [Number], required: true},//51.123456,35.123456
     images:{type: [String],required: false, default:[]},
+    options: {
+        type: Object,
+        default: {},}
 },{
     timestamps: true,
 });

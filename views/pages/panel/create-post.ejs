@@ -23,33 +23,45 @@
             </ul>
             <%}%>
             <%}else{%>
+            <form action="/post/create" method="post" enctype="multipart/form-data; charset=utf-8">
+              <input type="hidden" name="lat" id="lat" />
+              <input type="hidden" name="lng" id="lng" />
+              <input type="hidden" name="category" id="category" , value="<%=category%>" />
+              <div class="p-2">
+                <label >انتخاب آدرس </label>
+                <div id="map-element" class="w-100" style="height: 300px"></div>
+              </div> 
               <div class="p-2">
                 <label >تصاویر آگهی</label>
                 <input type="file" name="images" multiple class="form-control" />
-              </div>              <div class="p-2">
+              </div> 
+              <div class="p-2">
                 <label >عنوان آگهی </label>
                 <input type="text" name="title_post" placeholder="عنوان آگهی" class="form-control" />
               </div> 
               <div class="p-2">
                 <label >توضیحات آگهی </label>
-                <textarea name="description_post" placeholder="توضیحات آگهی" class="form-control"></textarea>
+                <textarea name="description" placeholder="توضیحات آگهی" class="form-control"></textarea>
               </div>
               <%options.forEach(option => {%>
                 <label><%=option.title%><%=option.required? "*": ""%></label>
                 <%if(option.type === "array"){%>
                   <div class="p-2">
-                    <select name="<%=option.key%>" class="form-select">
+                    <select name="<%=option.title%>" class="form-select">
                       <%option.enum.forEach(item => {%>
                         <option value="<%=item%>"><%=item%></option>
-                      <%})%>
-                    </select>
-                  </div>
-                  <%}else{%>
-                    <div class="p-2">
-                      <input type="text" name="<%=option.key%>" class="form-control" placeholder="<%=option.guid%>"/>
+                        <%})%>
+                      </select>
                     </div>
-                  <%}%>
-              <%})%>
+                    <%}else{%>
+                      <div class="p-2">
+                        <input type="text" name="<%=option.title%>" class="form-control" placeholder="<%=option.guid%>"/>
+                      </div>
+                      <%}%>
+                      <%})%>
+                      <button type="submit" class="btn btn-danger">انتشارآگهی
+                      </button>
+                    </form>
             <%}%>
     </div>
 </div>
