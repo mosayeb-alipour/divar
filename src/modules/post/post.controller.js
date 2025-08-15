@@ -6,6 +6,9 @@ const CategoryModel = require("../category/category.model");
 const createHttpError = require("http-errors");
 const { Types } = require("mongoose");
 const { default: axios, get } = require("axios");
+const { removePropertyInObject } = require("../../common/utils/function");
+const { getAddressDetail } = require("../../common/utils/http");
+const utf8 = require("utf8");
 class PostController{
     #service;
     constructor(){
@@ -47,34 +50,27 @@ class PostController{
     }
     async create(req,res,next){
         try {
-            console.log(req.body);
-            
+            const images = req?.files?.map(image => image?.path?.slice(7));
             const {title_post:title,description:content,lat,lng,category} = req.body;
-            const result = await axios.get(`${process.env.MAP_IR_URL}?lat=${lat}&lon=${lng}`,{
-                headers:{
-                    "x-api-key": process.env.MAP_IR_KEY
+            const options = removePropertyInObject(req.body, ["title_post","lat","lng","category","images","description"]);
+            for (let key in options) {
+                let value = options[key];
+                delete options[key];
+                key = utf8.decode(key);
+                    options[key] = value;
                 }
-            }).then(res => res.data);
-            console.log(result);
-            
-            delete req.body["title_post"];
-            delete req.body["lat"];
-            delete req.body["lng"];
-            delete req.body["category"];
-            delete req.body["images"];
-            delete req.body["description"];
-            const options = req.body;
+            const {address, province, city, district} = await getAddressDetail(lat,lng);
             await this.#service.create({
                 title,
                 content,
                 coordinate: [lat,lng],
                 category: new Types.ObjectId(category),
-                images:[],
+                images,
                 options,
-                address: result.address,
-                province: result.province,
-                city: result.city,
-                district: result.region
+                address,
+                province,
+                city,
+                district,
 
             })
             return res.status(HttpCodes.CREATED).json({
@@ -87,6 +83,8 @@ class PostController{
     }
     async find(req,res,next){
         try {
+            const posts = await this.#service.find();
+            return res.render("./pages/panel/posts.ejs", {posts});
 
         } catch (error) {
             next(error)

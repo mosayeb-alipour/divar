@@ -8,6 +8,7 @@ const SwaggerConfig = require('./src/config/swagger.config.js');
 const mainRouter = require('./src/app.routes.js');
 const cookieParser = require('cookie-parser');
 const expressEjsLayouts = require('express-ejs-layouts');
+const moment = require('jalali-moment');
 require ('./src/config/mongoose.config.js');
 async function main() {
     const app = express();
@@ -20,6 +21,7 @@ async function main() {
     app.set("view engine", "ejs");
     app.set("layout", "./layouts/panel/main.ejs");
     app.use(mainRouter);
+    app.locals.moment = moment
     SwaggerConfig(app)
     NotFoundHandler(app) 
     AllExceptionHandler(app);
