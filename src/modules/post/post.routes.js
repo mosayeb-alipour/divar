@@ -2,10 +2,14 @@ const { Router } = require("express");
 const postController = require("./post.controller");
 const { updateMany } = require("./post.model");
 const { upload } = require("../../common/utils/multer");
+const Authorization = require("../../guard/authorization.guard");
 const router = Router();
-router.get("/create",postController.createPostPage)
-router.post("/create",upload.array("images",10),postController.create)
-router.get("/my",postController.find);
+router.get("/create",Authorization,postController.createPostPage)
+router.post("/create",Authorization,upload.array("images",10),postController.create)
+router.get("/my",Authorization,postController.findMyPosts);
+router.delete("/delete/:id",Authorization,postController.remove);//delete ba method-override
+// router.get("/delete/:id",Authorization,postController.remove);//delete for html not pakage
+
 module.exports = {
     PostRouter: router
 }

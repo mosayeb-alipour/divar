@@ -11,6 +11,7 @@ const { getAddressDetail } = require("../../common/utils/http");
 const utf8 = require("utf8");
 class PostController{
     #service;
+    success_message;
     constructor(){
         autoBind(this);
         this.#service = postService;
@@ -50,6 +51,7 @@ class PostController{
     }
     async create(req,res,next){
         try {
+            const userId = req.user._id
             const images = req?.files?.map(image => image?.path?.slice(7));
             const {title_post:title,description:content,lat,lng,category} = req.body;
             const options = removePropertyInObject(req.body, ["title_post","lat","lng","category","images","description"]);
@@ -61,6 +63,7 @@ class PostController{
                 }
             const {address, province, city, district} = await getAddressDetail(lat,lng);
             await this.#service.create({
+                userId,
                 title,
                 content,
                 coordinate: [lat,lng],
@@ -73,18 +76,32 @@ class PostController{
                 district,
 
             })
-            return res.status(HttpCodes.CREATED).json({
-                message: PostMessage.Created
-            })
+            // return res.status(HttpCodes.CREATED).json({
+                // message: PostMessage.Created
+            // })
+            const posts = await this.#service.find(userId)
+            return res.render("./pages/panel/posts.ejs", {
+                posts,
+                count: posts.length,
+                success_message:PostMessage.Created,
+                error_message: null,
+            });
         } catch (error) {
             next(error)
             
         }
     }
-    async find(req,res,next){
-        try {
-            const posts = await this.#service.find();
-            return res.render("./pages/panel/posts.ejs", {posts});
+    async findMyPosts(req,res,next){
+        try {            
+            const userId = req.user._id;
+            const posts = await this.#service.find(userId);
+            res.render("./pages/panel/posts.ejs", {
+                posts,
+                count: posts.length,
+                success_message:this.success_message,
+                error_message: null,
+            });
+            this.success_message = null;
 
         } catch (error) {
             next(error)
@@ -93,7 +110,13 @@ class PostController{
     async remove(req,res,next){
         try {
             const {id} = req.params;
+            console.log("ID to remove:", id); // بررسی کنید که id به درستی دریافت می‌شود
+            await this.#service.remove(id);
+            console.log("Removal successful!"); // بررسی کنید که آیا این خط اجرا می‌شود
+            this.success_message = PostMessage.Deleted;
+            return res.redirect('/post/my');
         } catch (error) {
+            console.error("Error during removal:", error); // خطای دقیق رو اینجا می‌بینید
             next(error)
         }
     }
