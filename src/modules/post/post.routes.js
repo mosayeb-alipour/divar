@@ -7,8 +7,8 @@ const router = Router();
 router.get("/create",Authorization,postController.createPostPage)
 router.post("/create",Authorization,upload.array("images",10),postController.create)
 router.get("/my",Authorization,postController.findMyPosts);
-router.delete("/delete/:id",Authorization,postController.remove);//delete ba method-override
-// router.get("/delete/:id",Authorization,postController.remove);//delete for html not pakage
+router.delete("/delete/:id",Authorization,postController.remove);
+router.get("/:id",postController.showPost);
 
 module.exports = {
     PostRouter: router

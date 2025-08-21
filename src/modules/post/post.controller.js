@@ -53,8 +53,8 @@ class PostController{
         try {
             const userId = req.user._id
             const images = req?.files?.map(image => image?.path?.slice(7));
-            const {title_post:title,description:content,lat,lng,category} = req.body;
-            const options = removePropertyInObject(req.body, ["title_post","lat","lng","category","images","description"]);
+            const {title_post:title,description:content,lat,lng,category, amount} = req.body;
+            const options = removePropertyInObject(req.body, ["amount","title_post","lat","lng","category","images","description"]);
             for (let key in options) {
                 let value = options[key];
                 delete options[key];
@@ -65,6 +65,7 @@ class PostController{
             await this.#service.create({
                 userId,
                 title,
+                amount,
                 content,
                 coordinate: [lat,lng],
                 category: new Types.ObjectId(category),
@@ -118,6 +119,32 @@ class PostController{
         } catch (error) {
             console.error("Error during removal:", error); // خطای دقیق رو اینجا می‌بینید
             next(error)
+        }
+    }
+    async showPost (req, res, next) {
+        try {
+            const {id} = req.params;
+            const post = await this.#service.checkExist(id);
+            res.locals.layout = "./layouts/website/main.ejs";
+            res.render("./pages/home/post.ejs", { style: "", script: "",
+                post
+            });
+
+        } catch (error) {
+            next(error);
+        }
+    }
+    async postList (req, res, next) {
+        try {
+            const query = req.query;
+            const posts = await this.#service.findAll(query);
+            res.locals.layout = "./layouts/website/main.ejs";
+            res.render("./pages/home/index.ejs", { style: "", script: "",
+                posts
+            });
+
+        } catch (error) {
+            next(error);
         }
     }
 }

@@ -43,6 +43,10 @@
                 <label >توضیحات آگهی </label>
                 <textarea name="description" placeholder="توضیحات آگهی" class="form-control"></textarea>
               </div>
+              <div class="p-2">
+                <label >قیمت آگهی هنگام نمایش</label>
+                <input type="text" name="amount" placeholder="مبلغ" class="form-control" />
+              </div> 
               <%options.forEach(option => {%>
                 <label><%=option.title%><%=option.required? "*": ""%></label>
                 <%if(option.type === "array"){%>
