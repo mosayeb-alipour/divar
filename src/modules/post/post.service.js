@@ -73,6 +73,8 @@ class PostService {
                 return [];
             }
         }
+        console.log(query);
+        
         if (search) {
             search = new RegExp(search, "ig");
             query['$or'] = [
